@@ -1,12 +1,13 @@
 {
   "expo": {
-    "name": "expo-drizzle",
-    "slug": "expo-drizzle",
+    "name": "food-log",
+    "slug": "food-log",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "scheme": "food-log",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -25,7 +26,11 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-sqlite"
-    ]
+      "expo-sqlite",
+      "expo-router"
+    ],
+    "experiments": {
+      "tsconfigPaths": true
+    }
   }
 }
