@@ -60,7 +60,7 @@ export default function RootLayout() {
   if (!isColorSchemeLoaded) {
     return null;
   }
-
+  console.log("isDarkColorScheme", isDarkColorScheme);
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <StatusBar style={isDarkColorScheme ? "light" : "dark"} />

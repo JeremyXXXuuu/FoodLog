@@ -1,39 +1,65 @@
 import { View } from "react-native";
-import * as SQLite from "expo-sqlite";
 import { useEffect, useState } from "react";
-import { drizzle } from "drizzle-orm/expo-sqlite";
-import { usersTable } from "@/db/schema";
+import { getDrizzle } from "@/db/db";
+import { UserService } from "@/db/user";
+import type { usersTable } from "@/db/schema";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "drizzle/migrations";
 
 import { Text } from "@/components/ui/text";
+import { supabase } from "@/lib/supabase";
+import Auth from "@/components/auth/Auth";
+import Account from "@/components/auth/Account";
 
-const expo = SQLite.openDatabaseSync("db.db");
+import { Session } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/button";
 
-const db = drizzle(expo);
+// const expo = SQLite.openDatabaseSync("db.db", { enableChangeListener: true });
+
+// const db = drizzle(expo);
 
 export default function App() {
-  const { success, error } = useMigrations(db, migrations);
+  const { success, error } = useMigrations(getDrizzle(), migrations);
   const [items, setItems] = useState<(typeof usersTable.$inferSelect)[] | null>(
     null,
   );
+
+  const [session, setSession] = useState<Session | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
   useEffect(() => {
     if (!success) return;
 
-    (async () => {
-      await db.delete(usersTable);
-
-      await db.insert(usersTable).values([
-        {
+    const initializeData = async () => {
+      try {
+        await UserService.deleteAllUsers();
+        await UserService.createUser({
           name: "John",
           age: 30,
           email: "john@example111.com",
-        },
-      ]);
+        });
+        await UserService.setCaloriesGoal(1, 2000);
+        await UserService.setMacrosGoal(1, {
+          fat: 50,
+          protein: 100,
+          carbs: 200,
+        });
+        const users = await UserService.getAllUsers();
+        setItems(users);
+      } catch (err) {
+        console.error("Database operation failed:", err);
+      }
+    };
 
-      const users = await db.select().from(usersTable);
-      setItems(users);
-    })();
+    initializeData();
   }, [success]);
 
   if (error) {
@@ -63,8 +89,23 @@ export default function App() {
   return (
     <View>
       {items.map(item => (
-        <Text key={item.id}>{item.email}</Text>
+        <View key={item.id}>
+          <Text>{item.id}</Text>
+          <Text>{item.email}</Text>
+          <Text>{item.calorires_goal}</Text>
+          <Button>
+            <Text>Update</Text>
+          </Button>
+        </View>
       ))}
+      {session && session.user ? (
+        <Account
+          key={session.user.id}
+          session={session}
+        />
+      ) : (
+        <Auth />
+      )}
     </View>
   );
 }
