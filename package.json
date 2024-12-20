@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.23.1",
+    "@rn-primitives/slot": "^1.1.0",
+    "@rn-primitives/types": "^1.1.0",
     "babel-plugin-inline-import": "^3.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

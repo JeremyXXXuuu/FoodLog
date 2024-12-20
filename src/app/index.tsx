@@ -1,10 +1,12 @@
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import * as SQLite from "expo-sqlite";
 import { useEffect, useState } from "react";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { usersTable } from "@/db/schema";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "drizzle/migrations";
+
+import { Text } from "@/components/ui/text";
 
 const expo = SQLite.openDatabaseSync("db.db");
 
@@ -59,14 +61,9 @@ export default function App() {
   }
 
   return (
-    <View className="h-full">
+    <View>
       {items.map(item => (
-        <Text
-          className="text-primary"
-          key={item.id}
-        >
-          {item.email}
-        </Text>
+        <Text key={item.id}>{item.email}</Text>
       ))}
     </View>
   );
