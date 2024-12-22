@@ -11,6 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+// import { Oauth } from "@/components/auth/Oauth";
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -95,6 +96,8 @@ export default function Auth() {
           >
             <Text>Sign up</Text>
           </Button>
+
+          {/* <Oauth /> */}
         </View>
       </CardContent>
     </Card>
